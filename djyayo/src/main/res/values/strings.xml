@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DJYayo</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Login activity text -->
+    <string name="login_text">Login</string>
+
+    <!-- DJ activity text -->
+    <string name="title_musicqueue">Music Queue</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_change_room">Change room</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="choose_room">Choose a room</string>
+    <string name="room_toast">Room %1$s entered</string>
+    <string name="no_room_toast">No rooms found</string>
+
+    <!-- Music Queue Fragment -->
+    <plurals name="players_musicqueue">
+        <item quantity="one">There is %1$d player connected</item>
+        <item quantity="other">There is $1%d players connected</item>
+    </plurals>
+
+    <!-- API related thingies -->
+    <string name="title_activity_dj">DjActivity</string>
+
+    <!-- Loading titles -->
+    <string name="loading_dialog_title">Loading</string>
+    <string name="loading_dialog_msg1">Connecting to server</string>
+
+    <!-- Server selection dialog -->
+    <string name="selection_dialog_title">Select a server</string>
+    <string name="selection_dialog_ok">OK</string>
+
+    <!-- Connection error dialog -->
+    <string name="error_title">Error</string>
+    <string name="error_ok">OK</string>
+    <string name="error_msg1">Error while connecting to server</string>
+
+</resources>

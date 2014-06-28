@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Used for Google-style title inside activity -->
+    <style name="ActivityTitle" parent="@android:style/TextAppearance.Large">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+    <style name="ActivityTitleSeparator">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:background">@android:color/holo_blue_light</item>
+    </style>
+
+</resources>
