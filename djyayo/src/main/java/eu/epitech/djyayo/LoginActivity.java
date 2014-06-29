@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.api.AppInfo;
+import eu.epitech.djyayo.api.AppInfo;
 
 
 public class LoginActivity extends FragmentActivity {

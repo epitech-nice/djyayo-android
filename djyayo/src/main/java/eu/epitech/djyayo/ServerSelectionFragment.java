@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.EditText;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.api.AppInfo;
+import eu.epitech.djyayo.api.AppInfo;
 
 public class ServerSelectionFragment extends DialogFragment {
 

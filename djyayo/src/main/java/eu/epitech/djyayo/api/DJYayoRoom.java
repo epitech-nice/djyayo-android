@@ -1,4 +1,4 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.api;
+package eu.epitech.djyayo.api;
 
 
 import java.util.ArrayList;

@@ -1,8 +1,6 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.social;
+package eu.epitech.djyayo.social;
 
 import com.facebook.Session;
-
-import eu.epitech.djyayo.eu.epitech.djyayo.social.AbstractSocial;
 
 public class FacebookSocial extends AbstractSocial {
 

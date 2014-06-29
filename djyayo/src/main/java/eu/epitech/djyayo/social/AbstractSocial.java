@@ -1,4 +1,4 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.social;
+package eu.epitech.djyayo.social;
 
 public abstract class AbstractSocial {
 

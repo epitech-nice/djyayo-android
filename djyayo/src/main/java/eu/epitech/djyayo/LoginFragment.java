@@ -12,8 +12,8 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.LoginButton;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.api.AppInfo;
-import eu.epitech.djyayo.eu.epitech.djyayo.social.FacebookSocial;
+import eu.epitech.djyayo.api.AppInfo;
+import eu.epitech.djyayo.social.FacebookSocial;
 
 
 public class LoginFragment extends Fragment {

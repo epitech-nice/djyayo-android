@@ -1,4 +1,4 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.api;
+package eu.epitech.djyayo.api;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.social.AbstractSocial;
+import eu.epitech.djyayo.social.AbstractSocial;
 
 
 /*

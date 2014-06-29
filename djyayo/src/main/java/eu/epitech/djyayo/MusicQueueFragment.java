@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.api.AppInfo;
-import eu.epitech.djyayo.eu.epitech.djyayo.api.DJYayo;
-import eu.epitech.djyayo.eu.epitech.djyayo.api.DJYayoListener;
+import eu.epitech.djyayo.api.AppInfo;
+import eu.epitech.djyayo.api.DJYayo;
+import eu.epitech.djyayo.api.DJYayoListener;
 
 
 public class MusicQueueFragment extends Fragment implements DJYayoListener {

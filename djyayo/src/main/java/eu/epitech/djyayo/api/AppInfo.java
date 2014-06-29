@@ -1,6 +1,6 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.api;
+package eu.epitech.djyayo.api;
 
-import eu.epitech.djyayo.eu.epitech.djyayo.social.AbstractSocial;
+import eu.epitech.djyayo.social.AbstractSocial;
 
 public class AppInfo {
 

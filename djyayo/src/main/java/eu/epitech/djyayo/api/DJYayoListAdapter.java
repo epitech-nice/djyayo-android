@@ -1,13 +1,11 @@
-package eu.epitech.djyayo.eu.epitech.djyayo.api;
+package eu.epitech.djyayo.api;
 
-import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 
 import eu.epitech.djyayo.R;
-import eu.epitech.djyayo.eu.epitech.djyayo.api.DJYayoRoom;
 
 
 public class DJYayoListAdapter implements ListAdapter {
