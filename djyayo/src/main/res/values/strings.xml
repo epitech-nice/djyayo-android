@@ -33,6 +33,9 @@
     <!-- Server selection dialog -->
     <string name="selection_dialog_title">Select a server</string>
     <string name="selection_dialog_ok">OK</string>
+    <string name="selection_dialog_msg">
+        Please enter the DJYayo server you want to connect to:
+    </string>
 
     <!-- Connection error dialog -->
     <string name="error_title">Error</string>

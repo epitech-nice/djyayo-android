@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -107,6 +108,9 @@ public class MusicQueueFragment extends Fragment implements DJYayoListener {
         String textViewText = resources.getQuantityString(R.plurals.players_musicqueue,
                 playerCount, playerCount);
         textView.setText(textViewText);
+        textView.setTextColor(getResources().getColor(
+                (playerCount == 0) ? android.R.color.holo_red_light :
+                        android.R.color.primary_text_dark));
 
         // Update list
         ListView listView = (ListView) getView().findViewById(R.id.list_tracks);

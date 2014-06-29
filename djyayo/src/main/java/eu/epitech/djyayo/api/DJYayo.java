@@ -89,20 +89,25 @@ public class DJYayo {
                 ArrayList players = (ArrayList) data.get("players");
                 room.setPlayerCount(players.size());
 
-                DJYayoRoom.Music music = new DJYayoRoom.Music();
+                // Read the current track and put it in the music list
                 HashMap<String, ?> track = (HashMap) data.get("currentTrack");
-                if (track != null) {
-                    HashMap<String, ?> trackInfo = (HashMap) track.get("track");
-
-                    music.trackName = (String) trackInfo.get("name");
-                    music.trackUrl = (String) trackInfo.get("imgUrl");
-                    music.trackArtist = (String)
-                            ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists"))
-                            .get(0).get("name"); // I cast so much that my new name is Gandalf
-                    room.addMusic(music);
-                }
+                if (track != null)
+                    room.addMusic(readTrack(track));
             }
         }).execute(server + "/room/" + roomName);
+    }
+
+    private DJYayoRoom.Music readTrack(HashMap<String, ?> track) {
+        DJYayoRoom.Music music = new DJYayoRoom.Music();
+
+        if (track != null) {
+            HashMap<String, ?> trackInfo = (HashMap) track.get("track");
+            music.trackName = (String) trackInfo.get("name");
+            music.trackUrl = (String) trackInfo.get("imgUrl");
+            music.trackArtist = (String) // I cast so much they call me Gandalf
+                    ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists")).get(0).get("name");
+        }
+        return music;
     }
 
     public void selectRoom(int position) {
