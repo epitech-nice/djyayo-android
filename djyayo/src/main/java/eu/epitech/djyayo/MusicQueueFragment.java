@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import eu.epitech.djyayo.api.AppInfo;
 import eu.epitech.djyayo.api.DJYayo;
+import eu.epitech.djyayo.api.DJYayoListAdapter;
 import eu.epitech.djyayo.api.DJYayoListener;
 
 
@@ -27,8 +29,8 @@ public class MusicQueueFragment extends Fragment implements DJYayoListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_musicqueue, container, false);
-        // ListView listView = (ListView) getActivity().findViewById(R.id.list_tracks);
-        // TODO : listView.setAdapter(new DJYayoListAdapter());
+        ListView listView = (ListView) view.findViewById(R.id.list_tracks);
+        listView.setAdapter(new DJYayoListAdapter());
         return view;
     }
 

@@ -1,36 +1,20 @@
 package eu.epitech.djyayo.api;
 
-import android.database.DataSetObserver;
+import android.content.Context;
+import android.net.Uri;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import eu.epitech.djyayo.R;
 
 
-public class DJYayoListAdapter implements ListAdapter {
+public class DJYayoListAdapter extends BaseAdapter {
 
     private DJYayoRoom room;
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled(int position) {
-        return true; // Why not
-    }
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-
-    }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-
-    }
 
     @Override
     public int getCount() {
@@ -48,30 +32,29 @@ public class DJYayoListAdapter implements ListAdapter {
     }
 
     @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = (convertView == null) ? View.inflate(parent.getContext(), R.layout.list_djyayo,
-                parent) : convertView;
+        View view;
+        DJYayoRoom.Music track = room.getMusic(position);
+
+        // Get (or create) the item view
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) parent.getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.list_djyayo, parent);
+            view.setTag(track);
+        } else {
+            view = convertView;
+        }
+        track = (DJYayoRoom.Music) view.getTag();
+
+        ImageView trackImage = (ImageView) view.findViewById(R.id.track_image);
+        TextView trackTitle = (TextView) view.findViewById(R.id.track_title);
+        TextView trackAuthor = (TextView) view.findViewById(R.id.track_author);
+        trackImage.setImageURI(Uri.parse(track.trackUrl));
+        trackTitle.setText(track.trackName);
+        trackAuthor.setText(track.trackArtist);
+
         return view;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return 0;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
     }
 
     public DJYayoRoom getRoom() {
