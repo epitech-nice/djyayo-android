@@ -107,6 +107,12 @@ public class MusicQueueFragment extends Fragment implements DJYayoListener {
         String textViewText = resources.getQuantityString(R.plurals.players_musicqueue,
                 playerCount, playerCount);
         textView.setText(textViewText);
+
+        // Update list
+        ListView listView = (ListView) getView().findViewById(R.id.list_tracks);
+        DJYayoListAdapter adapter = (DJYayoListAdapter) listView.getAdapter();
+        adapter.setRoom(djYayo.getRoom());
+        adapter.notifyDataSetChanged();
     }
 
 }

@@ -1,6 +1,7 @@
 package eu.epitech.djyayo.api;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import eu.epitech.djyayo.R;
+import eu.epitech.djyayo.system.ThumbnailLoader;
 
 
 public class DJYayoListAdapter extends BaseAdapter {
@@ -40,7 +47,7 @@ public class DJYayoListAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) parent.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_djyayo, parent);
+            view = inflater.inflate(R.layout.list_djyayo, parent, false);
             view.setTag(track);
         } else {
             view = convertView;
@@ -50,7 +57,9 @@ public class DJYayoListAdapter extends BaseAdapter {
         ImageView trackImage = (ImageView) view.findViewById(R.id.track_image);
         TextView trackTitle = (TextView) view.findViewById(R.id.track_title);
         TextView trackAuthor = (TextView) view.findViewById(R.id.track_author);
-        trackImage.setImageURI(Uri.parse(track.trackUrl));
+        ThumbnailLoader loader = new ThumbnailLoader(trackImage);
+        loader.load(track.trackUrl, parent.getContext().getCacheDir().getAbsolutePath() +
+                "/thumb" + Integer.toString(position) + ".png");
         trackTitle.setText(track.trackName);
         trackAuthor.setText(track.trackArtist);
 

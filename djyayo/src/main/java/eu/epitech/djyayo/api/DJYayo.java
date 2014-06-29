@@ -100,10 +100,6 @@ public class DJYayo {
                             ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists"))
                             .get(0).get("name"); // I cast so much that my new name is Gandalf
                     room.addMusic(music);
-
-                    Log.i("TrackName", music.trackName);
-                    Log.i("TrackURL", music.trackUrl);
-                    Log.i("TrackArtist", music.trackArtist);
                 }
             }
         }).execute(server + "/room/" + roomName);
