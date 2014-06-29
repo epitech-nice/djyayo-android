@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/track_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp" />
+        android:layout_width="80dp"
+        android:layout_height="64dp"
+        android:paddingRight="16dp" />
 
     <TextView
         android:id="@+id/track_title"
@@ -23,5 +24,34 @@
         android:layout_toRightOf="@+id/track_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/track_state"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/track_votes"
+        android:layout_toLeftOf="@+id/track_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/track_adder_image"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="8dp"
+        android:paddingBottom="8dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:id="@+id/track_adder_name"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/track_adder_image"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

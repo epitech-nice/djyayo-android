@@ -43,12 +43,18 @@ public class DJYayoRoom {
     }
 
     public static class Music {
+        // Constants
+        public final static int STATE_DEFAULT = 0;
+        public final static int STATE_VOTED = 1;
+        public final static int STATE_CURRENT = 2;
+
         // Vote related attributes
+        public int state;
         public boolean voted;
         public int voteCount;
 
         // Adder related attributes
-        public int addrId;
+        public String addrId;
         public String addrName;
         public String addrUrl;
 

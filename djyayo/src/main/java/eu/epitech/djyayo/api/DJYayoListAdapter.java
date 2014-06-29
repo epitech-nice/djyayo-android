@@ -54,6 +54,7 @@ public class DJYayoListAdapter extends BaseAdapter {
         }
         track = (DJYayoRoom.Music) view.getTag();
 
+        // Set track-related infos
         ImageView trackImage = (ImageView) view.findViewById(R.id.track_image);
         TextView trackTitle = (TextView) view.findViewById(R.id.track_title);
         TextView trackAuthor = (TextView) view.findViewById(R.id.track_author);
@@ -62,6 +63,16 @@ public class DJYayoListAdapter extends BaseAdapter {
                 "/thumb" + Integer.toString(position) + ".png");
         trackTitle.setText(track.trackName);
         trackAuthor.setText(track.trackArtist);
+
+        // Set vote-related infos
+        ImageView adderImage = (ImageView) view.findViewById(R.id.track_adder_image);
+        TextView adderName = (TextView) view.findViewById(R.id.track_adder_name);
+        TextView trackVotes = (TextView) view.findViewById(R.id.track_votes);
+        loader = new ThumbnailLoader(adderImage);
+        loader.load(track.addrUrl, parent.getContext().getCacheDir().getAbsolutePath() +
+            "/adder_thumb" + Integer.toString(position) + ".png");
+        adderName.setText(track.addrName);
+        trackVotes.setText(Integer.toString(track.voteCount));
 
         return view;
     }

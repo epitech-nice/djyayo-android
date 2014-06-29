@@ -90,22 +90,44 @@ public class DJYayo {
                 room.setPlayerCount(players.size());
 
                 // Read the current track and put it in the music list
-                HashMap<String, ?> track = (HashMap) data.get("currentTrack");
-                if (track != null)
-                    room.addMusic(readTrack(track));
+                HashMap<String, ?> currentTrack = (HashMap) data.get("currentTrack");
+                if (currentTrack != null)
+                    room.addMusic(readTrack(currentTrack, true));
+
+                // Read the queue
+                ArrayList<HashMap<String, ?>> queue = (ArrayList) data.get("queue");
+                if (queue != null) {
+                    for (HashMap<String, ?> track : queue) {
+                        room.addMusic(readTrack(track, false));
+                    }
+                }
             }
         }).execute(server + "/room/" + roomName);
     }
 
-    private DJYayoRoom.Music readTrack(HashMap<String, ?> track) {
+    private DJYayoRoom.Music readTrack(HashMap<String, ?> track, boolean current) {
         DJYayoRoom.Music music = new DJYayoRoom.Music();
 
         if (track != null) {
+            // Reading track related thingies
             HashMap<String, ?> trackInfo = (HashMap) track.get("track");
             music.trackName = (String) trackInfo.get("name");
             music.trackUrl = (String) trackInfo.get("imgUrl");
             music.trackArtist = (String) // I cast so much they call me Gandalf
                     ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists")).get(0).get("name");
+
+            // Adder related...
+            HashMap<String, ?> trackAdder = (HashMap) track.get("addedBy");
+            music.addrId = (String) trackAdder.get("id");
+            music.addrName = (String) trackAdder.get("name");
+            music.addrUrl = (String) trackAdder.get("imgUrl");
+
+            // Vote related...
+            ArrayList<HashMap<String, ?>> trackVotes = (ArrayList) track.get("votes");
+            music.voteCount = trackVotes.size();
+            music.voted = false; // TODO : Get the user ID to see if the user voted for the track
+            music.state = (current) ? DJYayoRoom.Music.STATE_CURRENT :
+                    DJYayoRoom.Music.STATE_DEFAULT;
         }
         return music;
     }

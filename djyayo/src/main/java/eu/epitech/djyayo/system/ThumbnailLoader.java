@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
@@ -28,11 +29,22 @@ public class ThumbnailLoader {
         new DownloadThumbnailTask().execute(url);
     }
 
+    private HttpURLConnection followRedirects(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
+        int code;
+        while ((code = connection.getResponseCode()) / 100 == 3) { // While redirect
+            url = connection.getHeaderField("location");
+            connection = (HttpURLConnection) (new URL(url)).openConnection();
+        }
+        return connection;
+    }
+
     private class DownloadThumbnailTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             try {
-                InputStream is = (new URL(params[0])).openStream();
+                HttpURLConnection connection = followRedirects(params[0]);
+                InputStream is = connection.getInputStream();
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dst));
 
                 byte buf[] = new byte[4096];
