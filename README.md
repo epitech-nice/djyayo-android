@@ -1,5 +1,5 @@
-DJYayo for Android
-==================
+djyayo-android
+==============
 
 Warning
 -------
