@@ -74,6 +74,10 @@ public class DJYayoListAdapter extends BaseAdapter {
         adderName.setText(track.adder.name);
         trackVotes.setText(Integer.toString(track.voteCount));
 
+        // Finally, track's state
+        ImageView trackState = (ImageView) view.findViewById(R.id.track_state);
+        trackState.setImageResource(track.state);
+
         return view;
     }
 

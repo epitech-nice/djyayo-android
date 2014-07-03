@@ -30,6 +30,7 @@ public class DJYayo {
     private int lastHttpCode;
 
     // Global info
+    private DJYayoUser user;
     private String accessToken;
     private ArrayList<String> rooms;
 
@@ -41,8 +42,8 @@ public class DJYayo {
         listeners = new ArrayList<DJYayoListener>();
     }
 
-    public void connect(String server, AbstractSocial social) {
-        // Build the request
+    public void connect(final String server, AbstractSocial social) {
+        // Build the login request
         StringBuilder builder = new StringBuilder();
         builder.append(server)
             .append("/login?method=")
@@ -54,6 +55,14 @@ public class DJYayo {
             @Override
             public void process(HashMap<String, ?> data) {
                 accessToken = (String) data.get("access_token");
+
+                // When the login request is processed, follow by a me request
+                new RetrieveRequest(new RequestListener() {
+                    @Override
+                    public void process(HashMap<String, ?> data) {
+                        user = readUser(data);
+                    }
+                }).execute(server + "/me?access_token=" + accessToken);
             }
         }).execute(builder.toString());
     }
@@ -121,7 +130,11 @@ public class DJYayo {
             // Read the track vote info
             ArrayList<HashMap<String, ?>> trackVotes = (ArrayList) track.get("votes");
             rtn.voteCount = trackVotes.size();
-            rtn.state = DJYayoTrack.STATE_DEFAULT; // TODO : Check if voted with user ID
+            rtn.state = DJYayoTrack.STATE_DEFAULT;
+            for(HashMap<String, ?> vote : trackVotes) {
+                if (user.id.equals((String) vote.get("id")))
+                    rtn.state = DJYayoTrack.STATE_VOTED;
+            }
 
             // Read adder info
             rtn.adder = readUser((HashMap) track.get("addedBy"));

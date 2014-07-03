@@ -29,7 +29,8 @@
         android:id="@+id/track_state"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:src="@drawable/state_default" />
 
     <TextView
         android:id="@+id/track_votes"

@@ -1,10 +1,12 @@
 package eu.epitech.djyayo.api;
 
+import eu.epitech.djyayo.R;
+
 public class DJYayoTrack {
 
-    public final static int STATE_DEFAULT = 0;
-    public final static int STATE_VOTED = 1;
-    public final static int STATE_CURRENT = 2;
+    public final static int STATE_DEFAULT = R.drawable.state_default;
+    public final static int STATE_VOTED = R.drawable.state_voted;
+    public final static int STATE_CURRENT = R.drawable.state_current;
 
     public int state;
     public int voteCount;
