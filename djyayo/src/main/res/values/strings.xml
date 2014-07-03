@@ -20,7 +20,7 @@
     <!-- Music Queue Fragment -->
     <plurals name="players_musicqueue">
         <item quantity="one">There is %1$d player connected</item>
-        <item quantity="other">There is $1%d players connected</item>
+        <item quantity="other">There is %1$d players connected</item>
     </plurals>
 
     <!-- API related thingies -->

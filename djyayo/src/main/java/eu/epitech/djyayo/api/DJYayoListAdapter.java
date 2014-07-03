@@ -25,12 +25,12 @@ public class DJYayoListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return ((room == null) ? 0 : room.getMusicCount());
+        return ((room == null) ? 0 : room.getTrackCount());
     }
 
     @Override
     public Object getItem(int position) {
-        return ((room == null) ? 0 : room.getMusic(position));
+        return ((room == null) ? 0 : room.getTrack(position));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DJYayoListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        DJYayoRoom.Music track = room.getMusic(position);
+        DJYayoTrack track = room.getTrack(position);
 
         // Get (or create) the item view
         if (convertView == null) {
@@ -52,26 +52,26 @@ public class DJYayoListAdapter extends BaseAdapter {
         } else {
             view = convertView;
         }
-        track = (DJYayoRoom.Music) view.getTag();
+        track = (DJYayoTrack) view.getTag();
 
         // Set track-related infos
         ImageView trackImage = (ImageView) view.findViewById(R.id.track_image);
         TextView trackTitle = (TextView) view.findViewById(R.id.track_title);
         TextView trackAuthor = (TextView) view.findViewById(R.id.track_author);
         ThumbnailLoader loader = new ThumbnailLoader(trackImage);
-        loader.load(track.trackUrl, parent.getContext().getCacheDir().getAbsolutePath() +
+        loader.load(track.thumbUrl, parent.getContext().getCacheDir().getAbsolutePath() +
                 "/thumb" + Integer.toString(position) + ".png");
-        trackTitle.setText(track.trackName);
-        trackAuthor.setText(track.trackArtist);
+        trackTitle.setText(track.name);
+        trackAuthor.setText(track.artist);
 
         // Set vote-related infos
         ImageView adderImage = (ImageView) view.findViewById(R.id.track_adder_image);
         TextView adderName = (TextView) view.findViewById(R.id.track_adder_name);
         TextView trackVotes = (TextView) view.findViewById(R.id.track_votes);
         loader = new ThumbnailLoader(adderImage);
-        loader.load(track.addrUrl, parent.getContext().getCacheDir().getAbsolutePath() +
+        loader.load(track.adder.thumbUrl, parent.getContext().getCacheDir().getAbsolutePath() +
             "/adder_thumb" + Integer.toString(position) + ".png");
-        adderName.setText(track.addrName);
+        adderName.setText(track.adder.name);
         trackVotes.setText(Integer.toString(track.voteCount));
 
         return view;

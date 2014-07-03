@@ -91,45 +91,53 @@ public class DJYayo {
 
                 // Read the current track and put it in the music list
                 HashMap<String, ?> currentTrack = (HashMap) data.get("currentTrack");
-                if (currentTrack != null)
-                    room.addMusic(readTrack(currentTrack, true));
+                if (currentTrack != null) {
+                    DJYayoTrack toAdd = readTrack(currentTrack);
+                    toAdd.state = DJYayoTrack.STATE_CURRENT;
+                    room.addTrack(toAdd);
+                }
 
                 // Read the queue
                 ArrayList<HashMap<String, ?>> queue = (ArrayList) data.get("queue");
                 if (queue != null) {
                     for (HashMap<String, ?> track : queue) {
-                        room.addMusic(readTrack(track, false));
+                        room.addTrack(readTrack(track));
                     }
                 }
             }
         }).execute(server + "/room/" + roomName);
     }
 
-    private DJYayoRoom.Music readTrack(HashMap<String, ?> track, boolean current) {
-        DJYayoRoom.Music music = new DJYayoRoom.Music();
+    private DJYayoTrack readTrack(HashMap<String, ?> track) {
+        DJYayoTrack rtn = new DJYayoTrack();
 
         if (track != null) {
-            // Reading track related thingies
+            // Read the track info
             HashMap<String, ?> trackInfo = (HashMap) track.get("track");
-            music.trackName = (String) trackInfo.get("name");
-            music.trackUrl = (String) trackInfo.get("imgUrl");
-            music.trackArtist = (String) // I cast so much they call me Gandalf
-                    ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists")).get(0).get("name");
+            rtn.name = (String) trackInfo.get("name");
+            rtn.artist = (String) ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists"))
+                    .get(0).get("name");
 
-            // Adder related...
-            HashMap<String, ?> trackAdder = (HashMap) track.get("addedBy");
-            music.addrId = (String) trackAdder.get("id");
-            music.addrName = (String) trackAdder.get("name");
-            music.addrUrl = (String) trackAdder.get("imgUrl");
-
-            // Vote related...
+            // Read the track vote info
             ArrayList<HashMap<String, ?>> trackVotes = (ArrayList) track.get("votes");
-            music.voteCount = trackVotes.size();
-            music.voted = false; // TODO : Get the user ID to see if the user voted for the track
-            music.state = (current) ? DJYayoRoom.Music.STATE_CURRENT :
-                    DJYayoRoom.Music.STATE_DEFAULT;
+            rtn.voteCount = trackVotes.size();
+            rtn.state = DJYayoTrack.STATE_DEFAULT; // TODO : Check if voted with user ID
+
+            // Read adder info
+            rtn.adder = readUser((HashMap) track.get("addedBy"));
         }
-        return music;
+        return rtn;
+    }
+
+    private DJYayoUser readUser(HashMap<String, ?> user) {
+        DJYayoUser rtn = new DJYayoUser();
+
+        if (user != null) {
+            rtn.id = (String) user.get("id");
+            rtn.name = (String) user.get("name");
+            rtn.thumbUrl = (String) user.get("imgUrl");
+        }
+        return rtn;
     }
 
     public void selectRoom(int position) {
