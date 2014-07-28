@@ -6,6 +6,9 @@
 
     <!-- Login activity text -->
     <string name="login_text">Login</string>
+    <string name="login_server">Connected to %1$s</string>
+    <string name="login_noserver">No server selected</string>
+    <string name="action_select_server">Select server</string>
 
     <!-- DJ activity text -->
     <string name="title_musicqueue">Music Queue</string>

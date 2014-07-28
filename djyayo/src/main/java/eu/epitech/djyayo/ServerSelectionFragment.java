@@ -15,6 +15,8 @@ import eu.epitech.djyayo.api.AppInfo;
 
 public class ServerSelectionFragment extends DialogFragment {
 
+    private SelectListener selectListener;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
@@ -28,21 +30,30 @@ public class ServerSelectionFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.selection_dialog_title)
-            .setView(view)
-            .setCancelable(false)
-            .setPositiveButton(R.string.selection_dialog_ok,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            AppInfo.getInstance().setServer(editText.getText().toString());
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(R.string.selection_dialog_ok,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (selectListener != null)
+                                    selectListener.onSelect(editText.getText().toString());
+                            }
                         }
-                    }
-            );
+                );
 
         // Create the dialog and returns it
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         return dialog;
+    }
+
+    public void setSelectListener(SelectListener selectListener) {
+        this.selectListener = selectListener;
+    }
+
+    public interface SelectListener {
+        public void onSelect(String server);
     }
 
 }

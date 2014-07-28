@@ -91,15 +91,16 @@ public class MusicQueueFragment extends Fragment implements DJYayoListener {
         if (djRoom != null && (currentRoom == null || !currentRoom.equals(djRoom))) {
             currentRoom = djRoom;
 
-            // Refresh the room list
-            djYayo.retrieveRoomInfo(AppInfo.getInstance().getServer());
-
-            // Print toast
-            String toastText = (djYayo.getCurrentRoom().isEmpty()) ?
-                    getString(R.string.no_room_toast) :
-                    String.format(getString(R.string.room_toast), djYayo.getCurrentRoom());
-            Toast.makeText(getActivity().getApplicationContext(), toastText,
-                    Toast.LENGTH_SHORT).show();
+            String toastText;
+            if (currentRoom.isEmpty()) {
+                toastText = getString(R.string.no_room_toast);
+                currentRoom = null;
+            } else {
+                toastText = getString(R.string.room_toast, currentRoom);
+                djYayo.retrieveRoomInfo(AppInfo.getInstance().getServer());
+            }
+            Toast.makeText(getActivity().getApplicationContext(), toastText, Toast.LENGTH_SHORT)
+                    .show();
         }
 
         // Update player count

@@ -23,32 +23,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':facebook')
-    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
-    compile 'org.springframework.android:spring-android-auth:1.0.1.RELEASE'
-    compile 'org.springframework.android:spring-android-core:1.0.1.RELEASE'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     compile 'com.android.support:support-v4:19.+'
-}
-
-// Gradle doesn't like Spring packaging >:(
-configurations.compile {
-    exclude module: 'spring-core'
-    exclude module: 'spring-web'
-    exclude module: 'commons-logging'
-}
-
-// Seriously.
-android {
-    packagingOptions {
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/notice.txt'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/dependencies.txt'
-        exclude 'META-INF/LGPL2.1'
-    }
 }

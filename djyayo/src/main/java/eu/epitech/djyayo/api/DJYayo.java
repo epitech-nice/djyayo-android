@@ -3,27 +3,27 @@ package eu.epitech.djyayo.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import eu.epitech.djyayo.jsonhelper.JSONHelper;
+import eu.epitech.djyayo.jsonhelper.JSONValue;
 import eu.epitech.djyayo.social.AbstractSocial;
+import eu.epitech.djyayo.system.SysUtils;
 
 
 /*
  * DISCLAIMER
- * This class is the UGLIEST shit I ever wrote.
- * It sucks, is not optimized AT ALL and is quite hard to maintain.
+ * This class is ugly. But still better than what it used to be.
+ * It is not really optimized and is a bit hard to maintain.
  * If you feel like it, feel free to rewrite it from scratch. If you do so, you will probably have
  * to make little changes in the entire code (especially the fragments of the DjActivity), sorry :(
  */
 public class DJYayo {
-
-    private final static String ENCODING = "UTF-8";
 
     private ArrayList<DJYayoListener> listeners;
 
@@ -44,42 +44,44 @@ public class DJYayo {
 
     public void connect(final String server, AbstractSocial social) {
         // Build the login request
-        StringBuilder builder = new StringBuilder();
-        builder.append(server)
-            .append("/login?method=")
-            .append(social.getAuthMethod())
-            .append("&token=")
-            .append(social.getAuthToken());
+        String str = server + "/login?method=" + social.getAuthMethod() + "&token=" +
+                social.getAuthToken();
 
         new RetrieveRequest(new RequestListener() {
             @Override
-            public void process(HashMap<String, ?> data) {
-                accessToken = (String) data.get("access_token");
+            public void process(JSONHelper helper) {
+                accessToken = SysUtils.safeCast(helper.getValue("access_token"),
+                        String.class);
 
                 // When the login request is processed, follow by a me request
                 new RetrieveRequest(new RequestListener() {
                     @Override
-                    public void process(HashMap<String, ?> data) {
-                        user = readUser(data);
+                    public void process(JSONHelper helper) {
+                        user = readUser(helper);
                     }
                 }).execute(server + "/me?access_token=" + accessToken);
             }
-        }).execute(builder.toString());
+        }).execute(str);
     }
 
-    public void retrieveRooms(String server) {
+    public void retrieveRooms(final String server) {
         new RetrieveRequest(new RequestListener() {
             @Override
-            public void process(HashMap<String, ?> data) {
+            public void process(JSONHelper helper) {
                 rooms = new ArrayList<String>();
-                for (String key : data.keySet()) {
-                    HashMap<String, ?> map = (HashMap<String, ?>) data.get(key);
-                    String roomName = (String) map.get("name");
-                    if (roomName != null) {
-                        rooms.add(roomName);
+
+                ArrayList roomList = SysUtils.safeCast(helper.getEntry().getValue(),
+                        ArrayList.class);
+                if (roomList != null) {
+                    for (int it = 0; it < roomList.size(); it++) {
+                        String roomName = SysUtils.safeCast(helper.getValue(it, "name"),
+                                String.class);
+                        if (roomName != null)
+                            rooms.add(roomName);
                     }
                 }
-                currentRoom = (rooms.isEmpty()) ? new String() : rooms.get(0);
+
+                currentRoom = (rooms.isEmpty()) ? "" : rooms.get(0);
             }
         }).execute(server + "/rooms");
     }
@@ -91,65 +93,62 @@ public class DJYayo {
     public void retrieveRoomInfo(String server, final String roomName) {
         new RetrieveRequest(new RequestListener() {
             @Override
-            public void process(HashMap<String, ?> data) {
-                // Initialize new room
+            public void process(JSONHelper helper) {
                 room = new DJYayoRoom(roomName);
 
-                ArrayList players = (ArrayList) data.get("players");
+                ArrayList players = SysUtils.safeCast(helper.getValue("players"), ArrayList.class);
                 room.setPlayerCount(players.size());
 
-                // Read the current track and put it in the music list
-                HashMap<String, ?> currentTrack = (HashMap) data.get("currentTrack");
-                if (currentTrack != null) {
-                    DJYayoTrack toAdd = readTrack(currentTrack);
+                // Get current track, if any
+                JSONValue value = helper.get("currentTrack");
+                if (value != null) {
+                    DJYayoTrack toAdd = readTrack(new JSONHelper(value));
                     toAdd.state = DJYayoTrack.STATE_CURRENT;
                     room.addTrack(toAdd);
                 }
 
-                // Read the queue
-                ArrayList<HashMap<String, ?>> queue = (ArrayList) data.get("queue");
+                // Fill track queue
+                ArrayList queue = SysUtils.safeCast(helper.get("queue"), ArrayList.class);
                 if (queue != null) {
-                    for (HashMap<String, ?> track : queue) {
-                        room.addTrack(readTrack(track));
+                    int queueCount = queue.size();
+                    for (int it = 0; it < queueCount; it++) {
+                        room.addTrack(readTrack(new JSONHelper(helper.get("queue", it))));
                     }
                 }
             }
         }).execute(server + "/room/" + roomName);
     }
 
-    private DJYayoTrack readTrack(HashMap<String, ?> track) {
+    private DJYayoTrack readTrack(JSONHelper helper) {
         DJYayoTrack rtn = new DJYayoTrack();
 
-        if (track != null) {
-            // Read the track info
-            HashMap<String, ?> trackInfo = (HashMap) track.get("track");
-            rtn.name = (String) trackInfo.get("name");
-            rtn.artist = (String) ((ArrayList<HashMap<String, ?>>) trackInfo.get("artists"))
-                    .get(0).get("name");
+        // Main track info
+        rtn.name = SysUtils.safeCast(helper.getValue("track", "name"), String.class);
+        rtn.artist = SysUtils.safeCast(helper.getValue("track", "artists", 0, "name"),
+                String.class);
+        rtn.thumbUrl = SysUtils.safeCast(helper.getValue("track", "imgUrl"), String.class);
 
-            // Read the track vote info
-            ArrayList<HashMap<String, ?>> trackVotes = (ArrayList) track.get("votes");
-            rtn.voteCount = trackVotes.size();
-            rtn.state = DJYayoTrack.STATE_DEFAULT;
-            for(HashMap<String, ?> vote : trackVotes) {
-                if (user.id.equals((String) vote.get("id")))
-                    rtn.state = DJYayoTrack.STATE_VOTED;
+        // Vote info
+        rtn.voteCount = SysUtils.safeCast(helper.getValue("votes"), ArrayList.class).size();
+        rtn.state = DJYayoTrack.STATE_DEFAULT;
+        for (int it = 0; it < rtn.voteCount; it++) {
+            if (user.id.equals(SysUtils.safeCast(
+                    helper.getValue("votes", it, "id"), String.class))) {
+                rtn.state = DJYayoTrack.STATE_VOTED;
             }
-
-            // Read adder info
-            rtn.adder = readUser((HashMap) track.get("addedBy"));
         }
+
+        // Adder info
+        rtn.adder = readUser(new JSONHelper(helper.get("addedBy")));
+
         return rtn;
     }
 
-    private DJYayoUser readUser(HashMap<String, ?> user) {
+    private DJYayoUser readUser(JSONHelper helper) {
         DJYayoUser rtn = new DJYayoUser();
-
-        if (user != null) {
-            rtn.id = (String) user.get("id");
-            rtn.name = (String) user.get("name");
-            rtn.thumbUrl = (String) user.get("imgUrl");
-        }
+        rtn.id = SysUtils.safeCast(helper.getValue("id"), String.class);
+        rtn.name = SysUtils.safeCast(helper.getValue("name"), String.class);
+        rtn.thumbUrl = SysUtils.safeCast(helper.getValue("imgUrl"), String.class);
         return rtn;
     }
 
@@ -204,7 +203,7 @@ public class DJYayo {
      * Used for retrieving and parsing JSON requests
      * Takes a RequestListener in constructor for processing the data when it's retrieved
      */
-    private class RetrieveRequest extends AsyncTask<String, String, HashMap<String, ?>> {
+    private class RetrieveRequest extends AsyncTask<String, String, JSONHelper> {
         private RequestListener listener;
 
         public RetrieveRequest(RequestListener listener) {
@@ -212,36 +211,36 @@ public class DJYayo {
         }
 
         @Override
-        public HashMap<String, ?> doInBackground(String... url) {
+        public JSONHelper doInBackground(String... url) {
             try {
-                RestTemplate rest = new RestTemplate();
-                rest.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                URL connectUrl = new URL(url[0]);
+                HttpURLConnection connection = (HttpURLConnection) connectUrl.openConnection();
 
-                ResponseEntity<HashMap> response =
-                        rest.getForEntity(url[0], HashMap.class);
-                HttpStatus status = response.getStatusCode();
-                lastHttpCode = status.value();
-                if (lastHttpCode / 100 == 2) // HTTP status code is 2xx = success
-                    return rest.getForObject(url[0], HashMap.class);
-            } catch (Exception e) {
+                lastHttpCode = connection.getResponseCode();
+                if (lastHttpCode / 100 == 2) {
+                    JSONHelper helper = new JSONHelper();
+                    InputStream is = new BufferedInputStream(connection.getInputStream());
+                    helper.cacheStream(is);
+                    connection.disconnect();
+                    return helper;
+                } else {
+                    Log.i("DJYayo", "HTTP request failed, error code " + lastHttpCode);
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
 
         @Override
-        public void onPostExecute(HashMap<String, ?> response) {
+        public void onPostExecute(JSONHelper response) {
             super.onPostExecute(response);
 
             if (response != null) {
-                Integer httpCode = (Integer) response.get("code");
-                if (httpCode == 200) {
-                    HashMap<String, ?> data;
-                    if (response.get("data") instanceof HashMap)
-                        data = (HashMap<String, ?>) response.get("data");
-                    else
-                        data = convertType(response.get("data"));
-                    listener.process(data);
+                Integer httpCode = SysUtils.safeCast(response.getValue("code"), Double.class)
+                        .intValue();
+                if (httpCode / 100 == 2) {
+                    listener.process(new JSONHelper(response.get("data")));
                 } else {
                     Log.i("DJYayo", "HTTP REST request failed, error code " + httpCode.toString());
                 }
@@ -249,24 +248,10 @@ public class DJYayo {
             }
             notifyChanges();
         }
-
-        // Some wierd-ass type-converting hacks. They work but are soooooo ugly.
-        private HashMap<String, ?> convertType(Object data) {
-            if (data instanceof ArrayList) {
-                int it = 0;
-                HashMap<String, Object> rtn = new HashMap<String, Object>();
-                for (Object obj : (ArrayList<Object>) data) {
-                    rtn.put(Integer.toString(it++), obj);
-                }
-                return rtn;
-            } else {
-                return null;
-            }
-        }
     }
 
     private interface RequestListener {
-        void process(HashMap<String, ?> data);
+        void process(JSONHelper helper);
     }
 
 }
